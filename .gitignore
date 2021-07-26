@@ -119,6 +119,6 @@ dist
 
 #build files
 /index.js
-/servers/*
-/utils/*
+/servers
+/utils
 /gatsby-*.js

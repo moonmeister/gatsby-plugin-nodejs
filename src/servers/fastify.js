@@ -1,32 +1,38 @@
 import path from "path";
 import fastifyStatic from "fastify-static";
-import { forEachFunction, forEachRedirect, withPrefixGenerator } from "../utils";
-import { getFunctionToExec } from "../utils/functions";
+import { withPrefixGenerator } from "../utils/general";
+import { forEachFunction, getFunctionToExec, getFunctionManifest } from "../utils/functions";
+import { forEachClientPath } from "../utils/clientPaths"
+import { forEachRedirect } from "../utils/redirects";
 
-export default function init(app, config) {
+export function init(app, config) {
   const withPrefix = withPrefixGenerator(config);
   const { redirects, paths } = config;
 
-  function handleFunctions(functions) {
-    forEachFunction(functions, (funcConfig) => {
-      const route = withPrefix(getRoute(funcConfig));
-      const fnToExecute = getFunctionToExec(funcConfig);
+  function handleFunctions() {
+    const functions = getFunctionManifest();
 
-      app.all(
-        route,
-        logFunctionExecution(async (req, reply) => {
-          try {
-            await Promise.resolve(fnToExecute(req, reply));
-          } catch (e) {
-            console.error(e);
-            // Don't send the error if that would cause another error.
-            if (!reply.sent) {
-              reply.code(500);
+    if (functions) {
+      forEachFunction(functions, (funcConfig) => {
+        const route = withPrefix(getRoute(funcConfig));
+        const fnToExecute = getFunctionToExec(funcConfig);
+
+        app.all(
+          route,
+          logFunctionExecution(async (req, reply) => {
+            try {
+              await Promise.resolve(fnToExecute(req, reply));
+            } catch (e) {
+              console.error(e);
+              // Don't send the error if that would cause another error.
+              if (!reply.sent) {
+                reply.code(500);
+              }
             }
-          }
-        }),
-      );
-    });
+          }),
+        );
+      });
+    }
   }
 
   function handleStatic() {

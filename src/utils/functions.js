@@ -28,5 +28,17 @@ export async function logFunctionExec(func) {
   };
 }
 
-export function handleFunction
+export function getFunctionManifest() {
+  const compiledFunctionsDir = path.resolve(`.cache`, `functions`);
 
+  let functions = [];
+  try {
+    functions = JSON.parse(
+      fs.readFileSync(path.join(compiledFunctionsDir, `manifest.json`), `utf-8`),
+    );
+  } catch (e) {
+    // ignore
+  }
+
+  return functions;
+}

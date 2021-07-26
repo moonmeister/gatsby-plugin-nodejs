@@ -1,12 +1,35 @@
 import express from "express";
-import { forEachClientPath, forEachRedirect, withPrefixGenerator } from "../utils";
+import { withPrefixGenerator } from "../utils/general";
 
-export default function init(app, config) {
+export function init(app, config) {
   const withPrefix = withPrefixGenerator(config);
   const { redirects, paths } = config;
 
-  function handleFunctions(functions) {
-    console.log("Gatsby Functions not implemented in Express");
+  function handleFunctions() {
+    const functions = getFunctionManifest();
+
+    if (functions) {
+      forEachFunction(functions, (funcConfig) => {
+        const route = withPrefix(getRoute(funcConfig));
+        const fnToExecute = getFunctionToExec(funcConfig);
+
+        app.all(
+          route,
+          logFunctionExecution(async (req, res, next) => {
+            try {
+              await Promise.resolve(fnToExecute(req, res));
+              next();
+            } catch (e) {
+              console.error(e);
+              // Don't send the error if that would cause another error.
+              if (!res.headersSent) {
+                res.sendStatus(500);
+              }
+            }
+          }),
+        );
+      });
+    }
   }
 
   function handleStatic() {
