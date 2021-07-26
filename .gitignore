@@ -116,3 +116,9 @@ dist
 .pnp.*
 
 .DS_Store
+
+#build files
+/index.js
+/servers/*
+/utils/*
+/gatsby-*.js

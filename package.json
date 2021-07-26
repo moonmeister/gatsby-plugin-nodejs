@@ -4,7 +4,10 @@
   "description": "Gatsby plugin for integration with Node.js servers. ",
   "main": "index.js",
   "repository": "git@github.com:AdamSiekierski/gatsby-plugin-nodejs.git",
-  "author": "Adam Siekierski <adam.siekiera@outlook.com>",
+  "contributors": [
+    "Adam Siekierski <adam.siekiera@outlook.com>",
+    "Alex Moon <alex.jared.moon@gmail.com>"
+  ],
   "license": "MIT",
   "keywords": [
     "gatsby",
@@ -16,11 +19,35 @@
     "backend",
     "monolith"
   ],
+  "scripts": {
+    "build": "babel src --out-dir . --ignore \"**/__tests__\"",
+    "prepare": "cross-env NODE_ENV=production npm run build",
+    "watch": "babel -w src --out-dir . --ignore \"**/__tests__\""
+  },
+    "@babel/runtime": "^7.14.8",
   "dependencies": {
+    "@babel/runtime": "^7.14.8",
     "chalk": "^4.1.0",
-    "express": "^4.17.1",
-    "fastify": "^2.15.1",
-    "fastify-static": "^2.7.0",
     "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.14.8",
+    "babel-preset-gatsby-package": "^1.10.0",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "fastify": "^3.19.0",
+    "fastify-static": "^4.2.0"
+  },
+  "optionalPeerDependencies": {
+    "express": "^4.17.1",
+    "fastify": "^3.19.0",
+    "fastify-static": "^4.2.0"
+  },
+  "peerDependencies": {
+    "gatsby": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=12.13.0"
   }
 }

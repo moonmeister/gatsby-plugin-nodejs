@@ -1,7 +1,7 @@
-const fs = require("fs");
-const { exec } = require("child_process");
-const nodemon = require("nodemon");
-const chalk = require("chalk");
+import fs from "fs";
+import { exec } from "child_process";
+import nodemon from "nodemon";
+import chalk from "chalk";
 
 function log(...str) {
   console.log(chalk.magenta("[custom server]"), ...str);
