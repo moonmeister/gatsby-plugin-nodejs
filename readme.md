@@ -18,6 +18,7 @@
 - Supported frameworks:
   - Express
   - Fastify 2.x
+- Serving Gatsby Functions.
 - Serving built site
 - 404 page middleware
 - Gatsby redirects
@@ -144,7 +145,8 @@ The server will launch during the build process, and when running `gatsby develo
 - [ ] Gatsby Functions support
 - [ ] Propper file caching
 - [ ] Security headers/control
-- [ ] compression support?
+- [ ] Compression support
+- [ ] Simpler prefixing support (not passing "withPrefix" arround)
 
 ### License
 

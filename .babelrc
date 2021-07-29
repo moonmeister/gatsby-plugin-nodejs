@@ -1,4 +1,4 @@
 
 {
-  "presets": [["babel-preset-gatsby-package", { "browser": false }]]
+  "presets": [["babel-preset-gatsby-package"]]
 }

@@ -1,19 +1,20 @@
 import fs from "fs";
-import { exec } from "child_process";
+import { ChildProcess, exec } from "child_process";
 import nodemon from "nodemon";
 import chalk from "chalk";
+import type { ConfigPage, GatsbyApiInput, GatsbyNodeServerConfig } from "./index.d"
 
 function log(...str) {
   console.log(chalk.magenta("[custom server]"), ...str);
 }
 
-let proc = null;
-let watchProc = null;
+let proc: ChildProcess;
+let watchProc: typeof nodemon;
 
-function generateConfig({ pathPrefix, store }) {
+function generateConfig({ pathPrefix, store }: GatsbyApiInput) {
   const { pages, redirects } = store.getState();
 
-  const p = [];
+  const p: ConfigPage[] = [];
   for (const page of pages.values()) {
     p.push({
       matchPath: page.matchPath,
@@ -21,7 +22,7 @@ function generateConfig({ pathPrefix, store }) {
     });
   }
 
-  const config = {
+  const config: GatsbyNodeServerConfig = {
     paths: p,
     redirects,
     pathPrefix,
@@ -32,7 +33,7 @@ function generateConfig({ pathPrefix, store }) {
   fs.writeFileSync("public/gatsby-plugin-node.json", JSON.stringify(config, null, 2));
 }
 
-exports.onPreInit = function ({ pathPrefix, store }) {
+exports.onPreInit = function ({ pathPrefix, store }: GatsbyApiInput ): Promise<void> {
   generateConfig({ pathPrefix, store });
 
   return new Promise((resolve, reject) => {
@@ -40,7 +41,7 @@ exports.onPreInit = function ({ pathPrefix, store }) {
       log("Starting the custom Node.js server for the buildtime...");
       proc = exec("node server/index.js --no-gatsby");
 
-      proc.stdout.on("data", (data) => {
+      proc.stdout?.on("data", (data) => {
         log(`${data}`);
         resolve();
       });
@@ -59,7 +60,7 @@ exports.onPostBuild = function ({ store, pathPrefix }) {
   generateConfig({ pathPrefix, store });
 };
 
-exports.onPostBootstrap = function () {
+exports.onPostBootstrap = function (): Promise<void> {
   // Finish the buildtime custom server
   proc && proc.kill();
 
@@ -67,7 +68,7 @@ exports.onPostBootstrap = function () {
   if (process.env.NODE_ENV === "development" && fs.existsSync("server/index.js")) {
     log("Starting the custom server in watch mode using nodemon...");
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       watchProc = nodemon({
         script: "server/index.js",
         args: ["--no-gatsby"],
@@ -83,6 +84,8 @@ exports.onPostBootstrap = function () {
       watchProc.on("start", () => resolve());
     });
   }
+
+  return Promise.resolve()
 };
 
 process.on("beforeExit", () => watchProc.kill());

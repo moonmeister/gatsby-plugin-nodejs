@@ -20,11 +20,11 @@
     "monolith"
   ],
   "scripts": {
-    "build": "babel src --out-dir . --ignore \"**/__tests__\"",
+    "build": "babel src --out-dir . --ignore \"**/__tests__\" --extensions \".ts,.js\"",
     "prepare": "cross-env NODE_ENV=production npm run build",
-    "watch": "babel -w src --out-dir . --ignore \"**/__tests__\""
+    "watch": "babel -w src --out-dir . --ignore \"**/__tests__\" --extensions \".ts,.js\""
   },
-    "@babel/runtime": "^7.14.8",
+  "@babel/runtime": "^7.14.8",
   "dependencies": {
     "@babel/runtime": "^7.14.8",
     "chalk": "^4.1.0",
@@ -33,11 +33,14 @@
   "devDependencies": {
     "@babel/cli": "^7.14.8",
     "@babel/core": "^7.14.8",
+    "@types/express": "^4.17.13",
+    "@types/node": "^14.17.6",
     "babel-preset-gatsby-package": "^1.10.0",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "fastify": "^3.19.0",
-    "fastify-static": "^4.2.0"
+    "fastify-static": "^4.2.0",
+    "gatsby": "^3.10.2"
   },
   "optionalPeerDependencies": {
     "express": "^4.17.1",
